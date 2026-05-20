@@ -1,0 +1,104 @@
+# PRODUCT REQUIREMENTS DOCUMENT (PRD) & TECHNICAL SPECIFICATION
+## Project Name: Custom AI Personal Travel Assistant & Collaboration Web App
+## Version: 1.0
+## Target Audience: Private group use (Family & Friends)
+
+---
+
+## 1. Executive Summary & Core Concept
+The purpose of this application is to streamline group vacation planning by replacing chaotic group texts, scattered links, and disorganized spreadsheets with a singular, AI-powered collaborative web workspace. 
+
+Built using **Streamlit (Python)** for rapid UI deployment and **Supabase** for real-time data persistence, the app acts as an active digital concierge. It aggregates unstructured ideas from multiple users, structures them logically using a Large Language Model (LLM), crafts personalized schedules, matches group preferences ("vibes"), and handles automated image-based receipt scanning for expense tracking.
+
+---
+
+## 2. Core Feature & Functional Requirements
+
+### Feature 1: The Shared Brainstorming Feed
+* **User Action:** Any authorized user can log into the app, input an unstructured text snippet, or paste web links (e.g., blogs, Google Maps locations, restaurant recommendations).
+* **System Action:** The app saves the raw input, along with the contributor's name and a timestamp, to a shared database.
+* **UI Component:** A dynamic list or data table that automatically refreshes to display submissions from all group members in real-time.
+
+### Feature 2: The Multi-Preference "Vibe Checker"
+* **User Action:** Upon first login, users fill out a quick, 3-question profile survey regarding their travel preferences for the specific trip (e.g., Pace: Fast/Relaxed, Interests: Food/History/Adventure, Sleep Schedule: Early Bird/Night Owl).
+* **System Action:** User preference scores are stored as profiles in the database.
+* **AI Integration:** When generating itineraries, the system pulls these collective group vectors to tailor recommendations that balance conflicting preferences (e.g., scheduling a late-morning historical tour followed by a culinary lunch).
+
+### Feature 3: The "Local Expert" AI Itinerary Generator
+* **User Action:** The trip organizer clicks a "🔮 Generate AI Itinerary" button.
+* **System Action:** The backend pulls all accumulated notes from the Brainstorming Feed and all personal profiles from the Vibe Checker.
+* **AI Integration:** An LLM ingestion prompt processes this data to synthesize a cohesive, optimized daily itinerary. Activities are grouped geographically by neighborhood to reduce travel overhead.
+* **Interactive Controls:** Users can view the generated plan and use thumbs-up/down interactive elements to give feedback, prompting the AI to swap out low-rated items.
+
+### Feature 4: Vision-Based Receipt Scanner & Expense Logger
+* **User Action:** A user uploads an image file (PNG, JPG) of a group dining or activity receipt directly into the app.
+* **System Action:** The file is temporarily stored, and the image data is passed to a Multimodal LLM (e.g., GPT-4o or Claude 3.5 Sonnet).
+* **AI Integration:** The vision model extracts the merchant name, total cost, line items, and taxes.
+* **Collaboration Output:** The system auto-calculates splits based on attendance, posts the entry to a shared digital ledger, and updates an interactive "Who Owes Who" matrix.
+
+---
+
+## 3. Technology Stack & Architectural Blueprint
+* **Frontend & User Interface:** Streamlit (Python)
+* **Core Backend Logic:** Python 3.10+ (utilizing Streamlit native state management)
+* **Database & Storage:** Supabase (PostgreSQL database with real-time replication for multi-user sync)
+* **AI Engines:**
+    * Text Processing/Itinerary Synthesis: OpenAI API (`gpt-4o-mini` or `gpt-4o`)
+    * Multimodal Processing (Receipt Vision): OpenAI API (`gpt-4o`)
+* **Hosting & Deployment:** Streamlit Community Cloud (connected via GitHub repository)
+
+---
+
+## 4. Database Schema Design (Supabase Tables)
+
+### Table: `trip_metadata`
+| Column Name  | Data Type   | Description              |
+| :----------- | :---------- | :----------------------- |
+| `id`         | UUID (PK)   | Unique trip identifier   |
+| `destination`| VARCHAR     | Primary city/country     |
+| `start_date` | DATE        | Departure date           |
+| `end_date`   | DATE        | Return date              |
+
+### Table: `user_profiles`
+| Column Name       | Data Type  | Description                                      |
+| :---------------- | :--------- | :----------------------------------------------- |
+| `id`              | UUID (PK)  | Unique user identifier                           |
+| `name`            | VARCHAR    | Name displayed in the application                |
+| `pace_preference` | VARCHAR    | "Active", "Balanced", or "Relaxed"               |
+| `focus_preference`| VARCHAR[]  | Array of interests: `['Food', 'Museums', 'Nature']` |
+
+### Table: `brainstorming_feed`
+| Column Name  | Data Type      | Description                          |
+| :----------- | :------------- | :----------------------------------- |
+| `id`         | BIGINT (PK)    | Unique idea identifier               |
+| `user_id`    | UUID (FK)      | Reference to `user_profiles.id`      |
+| `raw_note`   | TEXT           | Unstructured ideas, links, or text   |
+| `created_at` | TIMESTAMPTZ    | Automatic timestamp                  |
+
+### Table: `expenses`
+| Column Name     | Data Type      | Description                                  |
+| :-------------- | :------------- | :------------------------------------------- |
+| `id`            | BIGINT (PK)    | Unique transaction identifier                |
+| `paid_by`       | UUID (FK)      | Reference to the paying user                 |
+| `amount`        | NUMERIC(10,2)  | Total dollar amount on the receipt           |
+| `description`   | VARCHAR        | Auto-extracted merchant name or note         |
+| `split_details` | JSONB          | Map of users and their calculated shares     |
+
+---
+
+## 5. Non-Functional & Security Requirements
+* **Real-Time Sync:** App state must evaluate database queries efficiently so updates by user A appear for user B upon standard Streamlit page interaction or light polling.
+* **Secrets Management:** API keys for OpenAI and Supabase credentials must never be hardcoded. They must be managed via Streamlit's native `secrets.toml` locally and encrypted environment variables in production.
+* **Responsive View:** The UI layout must be optimized for mobile web viewports, as most users will access the application from their phones during the trip.
+
+---
+
+## 6. Software Dependencies (`requirements.txt`)
+Below are the exact Python packages required to build and run this system:
+
+streamlit>=1.30.0
+openai>=1.10.0
+supabase>=2.3.0
+pandas>=2.1.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
