@@ -195,7 +195,7 @@ st.markdown("""
     <div class="hero-tag">Your AI-Powered Group Travel Hub</div>
     <h1>Hello, Welcome to the<br><span>Vacation Planner</span></h1>
     <p class="hero-sub">
-        Stop drowning in group chats and tangled spreadsheets.
+        Stop scrolling & drowning in group chats and tangled spreadsheets.
         Plan smarter, travel together, and let AI do the heavy lifting.
     </p>
     <div class="divider"></div>
