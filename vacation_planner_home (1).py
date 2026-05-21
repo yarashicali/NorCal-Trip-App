@@ -27,7 +27,16 @@ html, body, [class*="css"] { font-family: 'Lato', sans-serif; }
 .hero-tag { font-family:'Lato',sans-serif; font-weight:300; font-size:0.85rem; letter-spacing:0.35em; text-transform:uppercase; color:#f4a261; margin-bottom:0.6rem; }
 .hero h1  { font-family:'Playfair Display',serif; font-size:clamp(2.4rem,6vw,4.2rem); font-weight:900; line-height:1.1; color:#fff; margin:0 0 1rem; }
 .hero h1 span { color:#f4a261; }
-.hero-sub { font-size:1.15rem; font-weight:300; color:#cdd9e1; max-width:620px; margin:0 auto 2rem; line-height:1.7; }
+.hero-sub { 
+    font-size:1.15rem; 
+    font-weight:300; 
+    color:#cdd9e1; 
+    max-width:620px; 
+    margin:0 auto 2rem; 
+    line-height:1.7;
+    text-align:center;
+    display:block;
+}
 .divider  { width:60px; height:3px; background:#f4a261; margin:0 auto 2.5rem; border-radius:2px; }
 .cards-row { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; padding:0 1rem 2.5rem; animation:fadeUp 1s ease 0.3s both; }
 @keyframes fadeUp {
