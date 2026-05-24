@@ -1,4 +1,14 @@
 import streamlit as st
+from supabase import create_client, Client
+
+# Streamlit automatically fetches these from the cloud settings you just saved
+url: str = st.secrets["SUPABASE_URL"]
+key: str = st.secrets["SUPABASE_KEY"]
+
+# intialize your Supabase connection
+supabase: Client = create_client(url, key)
+
+st.sucess("Successfully connected to Supabase using Cloud Secrets")
 
 st.set_page_config(page_title="Vacation Planner", page_icon="✈️", layout="wide")
 
