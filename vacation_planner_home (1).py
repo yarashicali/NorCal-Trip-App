@@ -1,11 +1,14 @@
 import streamlit as st
 from supabase import create_client, Client
 
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+@st.cache_resource
+def init_supabase();
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = init_supabase()
+st.title("Rashi Successfully connected to Supabase using Cloud Secrets")
 st.set_page_config(page_title="Vacation Planner", page_icon="✈️", layout="wide")  # ← move here
-
-url = st.secrets["SUPABASE_URL"]
-key = st.secrets["SUPABASE_KEY"]
-supabase = create_client(url, key)
 
 st.success("Successfully connected to Supabase using Cloud Secrets")
 
